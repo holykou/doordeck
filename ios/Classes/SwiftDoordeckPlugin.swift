@@ -30,7 +30,6 @@ public class SwiftDoordeckPlugin: NSObject, FlutterPlugin {
               return(true)
             }) {
                 self.channel.invokeMethod("unlockFailed", arguments: nil)
-              return(false)
             }
           }
         }

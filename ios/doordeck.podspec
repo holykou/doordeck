@@ -23,7 +23,11 @@ A new Flutter plugin for doordeck SDK
   s.dependency 'Alamofire','~> 4.8'
   s.dependency 'Cache','~> 5.2'
   s.dependency 'Sodium','~> 0.8'
-
+s.resource_bundles = {
+    'Doordeck' => [
+        'Classes/**/*.{storyboard,cer}'
+    ]
+  }
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }
 end

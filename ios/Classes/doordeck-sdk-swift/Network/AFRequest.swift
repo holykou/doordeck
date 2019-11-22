@@ -39,7 +39,7 @@ class AFRequest {
         configuration.requestCachePolicy = .useProtocolCachePolicy
         configuration.urlCache = cache
         
-        sessionManager = Alamofire.SessionManager(configuration: configuration, serverTrustPolicyManager: ServerTrustPolicyManager(policies: serverTrustPolicy()))
+        sessionManager = Alamofire.SessionManager(configuration: configuration, serverTrustPolicyManager: ServerTrustPolicyManager(policies: serverTrustPolicy()!))
         
         sessionManager.delegate.taskWillPerformHTTPRedirection = { session, task, response, request in
             var redirectedRequest = request
@@ -153,22 +153,30 @@ class AFRequest {
         }
     }
     
-    func serverTrustPolicy() -> [String: ServerTrustPolicy]{
-        let amazonRootCA1Data = NSData(contentsOf: Bundle.main.url(forResource: "AmazonRootCA1", withExtension: "cer")!)
-        let amazonRootCA2Data = NSData(contentsOf: Bundle.main.url(forResource: "AmazonRootCA2", withExtension: "cer")!)
-        let amazonRootCA3Data = NSData(contentsOf: Bundle.main.url(forResource: "AmazonRootCA3", withExtension: "cer")!)
-        let amazonRootCA4Data = NSData(contentsOf: Bundle.main.url(forResource: "AmazonRootCA4", withExtension: "cer")!)
-        let amazonRootCA5Data = NSData(contentsOf: Bundle.main.url(forResource: "SFSRootCAG2", withExtension: "cer")!)
-        let amazonRootCA1 = ServerTrustPolicy.pinCertificates(certificates: [SecCertificateCreateWithData(nil, amazonRootCA1Data!)!,
-                                                                            SecCertificateCreateWithData(nil, amazonRootCA2Data!)!,
-                                                                            SecCertificateCreateWithData(nil, amazonRootCA3Data!)!,
-                                                                            SecCertificateCreateWithData(nil, amazonRootCA3Data!)!,
-                                                                            SecCertificateCreateWithData(nil, amazonRootCA4Data!)!,
-                                                                            SecCertificateCreateWithData(nil, amazonRootCA5Data!)!], validateCertificateChain: true, validateHost: true)
+    func serverTrustPolicy() -> [String: ServerTrustPolicy]?{
+        let podBundle = Bundle(for: Doordeck.self)
+        if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
+            if let bundle = Bundle(url: bundleURL) {
+                let amazonRootCA1Data = NSData(contentsOf: bundle.url(forResource: "AmazonRootCA1", withExtension: "cer")!)
+            let amazonRootCA2Data = NSData(contentsOf: bundle.url(forResource: "AmazonRootCA2", withExtension: "cer")!)
+            let amazonRootCA3Data = NSData(contentsOf: bundle.url(forResource: "AmazonRootCA3", withExtension: "cer")!)
+            let amazonRootCA4Data = NSData(contentsOf: bundle.url(forResource: "AmazonRootCA4", withExtension: "cer")!)
+            let amazonRootCA5Data = NSData(contentsOf: bundle.url(forResource: "SFSRootCAG2", withExtension: "cer")!)
+            let amazonRootCA1 = ServerTrustPolicy.pinCertificates(certificates: [SecCertificateCreateWithData(nil, amazonRootCA1Data!)!,
+                                                                                SecCertificateCreateWithData(nil, amazonRootCA2Data!)!,
+                                                                                SecCertificateCreateWithData(nil, amazonRootCA3Data!)!,
+                                                                                SecCertificateCreateWithData(nil, amazonRootCA3Data!)!,
+                                                                                SecCertificateCreateWithData(nil, amazonRootCA4Data!)!,
+                                                                                SecCertificateCreateWithData(nil, amazonRootCA5Data!)!], validateCertificateChain: true, validateHost: true)
+            
+            return ["api.doordeck.com" : amazonRootCA1,
+                    "api.staging.doordeck.com" : amazonRootCA1,
+            ]
+            }
+            
+        }
+        return nil
         
-        return ["api.doordeck.com" : amazonRootCA1,
-                "api.staging.doordeck.com" : amazonRootCA1,
-        ]
     }
     
     func cancelAllRequests() {

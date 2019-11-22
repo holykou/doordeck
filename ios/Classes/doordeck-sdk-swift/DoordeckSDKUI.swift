@@ -18,33 +18,38 @@ class DoordeckSDKUI: DoordeckUI {
         
         guard let view : UIViewController = UIApplication.topViewController() else { return }
         
-        let vc = getVerificationScreen(delegate,
+        if let vc = getVerificationScreen(delegate,
                                        controlDelegate: controlDelegate,
                                        apiClient: apiClient,
                                        sodiumHelper: sodiumHelper)
-        
-        let navigationController = UINavigationController(rootViewController: vc)
-        navigationController.isNavigationBarHidden = true
-        if sdkMode == false {
-            view.addChild(navigationController)
-        } else {
-            view.present(navigationController, animated: true, completion: nil)
+        {
+            let navigationController = UINavigationController(rootViewController: vc)
+            navigationController.isNavigationBarHidden = true
+            if sdkMode == false {
+                view.addChild(navigationController)
+            } else {
+                view.present(navigationController, animated: true, completion: nil)
+            }
         }
     }
     
     func getVerificationScreen(_ delegate: DoordeckInternalProtocol,
                                controlDelegate: DoordeckControl?,
                                apiClient:APIClient,
-                               sodiumHelper: SodiumHelper ) -> VerificationViewController {
-        
-        let storyboard : UIStoryboard = UIStoryboard(name: "VerificationStoryboard", bundle: nil)
-        let vc : VerificationViewController = storyboard.instantiateViewController(withIdentifier: "VerificationNoNavigation") as! VerificationViewController
-        vc.delegate = delegate
-        vc.controlDelegate = controlDelegate
-        vc.apiClient = apiClient
-        vc.sodium = sodiumHelper
-        
-        return vc
+                               sodiumHelper: SodiumHelper ) -> VerificationViewController? {
+        let podBundle = Bundle(for: Doordeck.self)
+        if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
+            if let bundle = Bundle(url: bundleURL) {
+                let storyboard  = UIStoryboard(name: "VerificationStoryboard", bundle: bundle)
+                let vc : VerificationViewController = storyboard.instantiateViewController(withIdentifier: "VerificationNoNavigation") as! VerificationViewController
+                vc.delegate = delegate
+                vc.controlDelegate = controlDelegate
+                vc.apiClient = apiClient
+                vc.sodium = sodiumHelper
+                return vc
+            }
+        }
+        return nil
     }
     
     func showUnlockScreenSuccess (_ lockManager: LockManager,

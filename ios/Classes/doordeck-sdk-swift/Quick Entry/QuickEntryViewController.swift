@@ -82,7 +82,10 @@ extension QuickEntryViewController: quickEntryDelegate {
 
     fileprivate func addNFCVC () {
         if #available(iOS 11, *) {
-            let storyboard: UIStoryboard = UIStoryboard(name: quickStoryboard, bundle:nil )
+            let podBundle = Bundle(for: Doordeck.self)
+            if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
+                if let bundle = Bundle(url: bundleURL) {
+            let storyboard: UIStoryboard = UIStoryboard(name: quickStoryboard, bundle:bundle )
             let bottomViewVC = storyboard.instantiateViewController(withIdentifier: bottomNFCView) as! BottomViewController
             bottomViewVC.view.frame = self.view.frame
             bottomViewVC.view.layoutIfNeeded()
@@ -94,6 +97,8 @@ extension QuickEntryViewController: quickEntryDelegate {
             UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseIn, animations: { [weak self] () -> Void in
                 self?.view.layoutIfNeeded()
                 }, completion: nil)
+                }
+            }
             
         } else {
             addQRVC()
@@ -101,18 +106,23 @@ extension QuickEntryViewController: quickEntryDelegate {
     }
     
     fileprivate func addQRVC () {
-        let storyboard: UIStoryboard = UIStoryboard(name: quickStoryboard, bundle:nil )
-        let bottomViewVC = storyboard.instantiateViewController(withIdentifier: bottomQRView) as! BottomViewControllerQR
-        bottomViewVC.view.frame = self.view.frame
-        bottomViewVC.view.layoutIfNeeded()
-        bottomViewVC.delegate = self
-        bottomViewVC.controlDelegate = self.controlDelegate
-        addChild(bottomViewVC)
-        self.view.addSubview(bottomViewVC.view)
-        
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseIn, animations: { [weak self]  () -> Void in
-            self?.view.layoutIfNeeded()
-            }, completion: nil)
+        let podBundle = Bundle(for: Doordeck.self)
+        if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
+            if let bundle = Bundle(url: bundleURL) {
+                let storyboard: UIStoryboard = UIStoryboard(name: quickStoryboard, bundle:nil )
+                let bottomViewVC = storyboard.instantiateViewController(withIdentifier: bottomQRView) as! BottomViewControllerQR
+                bottomViewVC.view.frame = self.view.frame
+                bottomViewVC.view.layoutIfNeeded()
+                bottomViewVC.delegate = self
+                bottomViewVC.controlDelegate = self.controlDelegate
+                addChild(bottomViewVC)
+                self.view.addSubview(bottomViewVC.view)
+                
+                UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseIn, animations: { [weak self]  () -> Void in
+                    self?.view.layoutIfNeeded()
+                    }, completion: nil)
+            }
+        }
     }
     
     func lockDetected(_ UUID: String) {
@@ -132,20 +142,30 @@ extension QuickEntryViewController: quickEntryDelegate {
     }
     
     func showLockScreen(_ lockTemp: LockDevice)  {
-        if let vc = UIStoryboard(name: lockUnlockStoryboard, bundle: nil).instantiateViewController(withIdentifier: lockUnlockIdentifier) as? LockUnlockViewController {
+        let podBundle = Bundle(for: Doordeck.self)
+        if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
+            if let bundle = Bundle(url: bundleURL) {
+        if let vc = UIStoryboard(name: lockUnlockStoryboard, bundle: bundle).instantiateViewController(withIdentifier: lockUnlockIdentifier) as? LockUnlockViewController {
             vc.certificateChain = self.certificateChain
             vc.sodium = self.sodium
             vc.lockVariable = lockUnlockScreen(origin: .internalApp, lock: lockTemp)
             present(vc, animated: true, completion: nil)
         }
+            }
+        }
         
     }
     
     func showLockScreenFail()  {
-        if let vc = UIStoryboard(name: lockUnlockStoryboard, bundle: nil).instantiateViewController(withIdentifier: lockUnlockIdentifier) as? LockUnlockViewController {
+        let podBundle = Bundle(for: Doordeck.self)
+        if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
+        if let bundle = Bundle(url: bundleURL) {
+        if let vc = UIStoryboard(name: lockUnlockStoryboard, bundle: bundle).instantiateViewController(withIdentifier: lockUnlockIdentifier) as? LockUnlockViewController {
             vc.certificateChain = self.certificateChain
             vc.sodium = self.sodium
             present(vc, animated: true, completion: nil)
+        }
+            }
         }
     }
     
