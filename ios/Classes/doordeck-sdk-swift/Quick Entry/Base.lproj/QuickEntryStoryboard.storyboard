@@ -113,10 +113,10 @@
             </objects>
             <point key="canvasLocation" x="4037.5999999999999" y="1647.5262368815593"/>
         </scene>
-        <!--Bottom View Controller-->
+        <!--Bottom View ControllerQR-->
         <scene sceneID="Wlp-4j-NmA">
             <objects>
-                <viewController storyboardIdentifier="bottomViewQR" useStoryboardIdentifierAsRestorationIdentifier="YES" id="irD-Ip-HAZ" customClass="BottomViewController" customModule="doordeck" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="bottomViewQR" useStoryboardIdentifierAsRestorationIdentifier="YES" id="irD-Ip-HAZ" customClass="BottomViewControllerQR" customModule="doordeck" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xVG-TD-7Xb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

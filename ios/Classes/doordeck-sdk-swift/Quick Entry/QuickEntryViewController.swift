@@ -109,7 +109,7 @@ extension QuickEntryViewController: quickEntryDelegate {
         let podBundle = Bundle(for: Doordeck.self)
         if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
             if let bundle = Bundle(url: bundleURL) {
-                let storyboard: UIStoryboard = UIStoryboard(name: quickStoryboard, bundle:nil )
+                let storyboard: UIStoryboard = UIStoryboard(name: quickStoryboard, bundle:bundle )
                 let bottomViewVC = storyboard.instantiateViewController(withIdentifier: bottomQRView) as! BottomViewControllerQR
                 bottomViewVC.view.frame = self.view.frame
                 bottomViewVC.view.layoutIfNeeded()

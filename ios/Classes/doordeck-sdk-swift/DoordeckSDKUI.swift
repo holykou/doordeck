@@ -62,17 +62,18 @@ class DoordeckSDKUI: DoordeckUI {
         
         guard let view : UIViewController = UIApplication.topViewController() else { return }
         
-        let quickEntryView = getQuickEntryVC(lockManager,
+        if let quickEntryView = getQuickEntryVC(lockManager,
                                              readerType: readerType,
                                              delegate: delegate,
                                              controlDelegate: controlDelegate,
                                              apiClient: apiClient,
                                              chain: chain,
                                              sodium: sodium)
-        
+        {
         let navigationController = UINavigationController(rootViewController: quickEntryView)
         navigationController.isNavigationBarHidden = true
         view.present(navigationController, animated: true, completion: nil)
+        }
     }
     
     func getQuickEntryVC(_ lockManager: LockManager,
@@ -81,9 +82,11 @@ class DoordeckSDKUI: DoordeckUI {
                          controlDelegate: DoordeckControl?,
                          apiClient: APIClient,
                          chain: CertificateChainClass,
-                         sodium: SodiumHelper) -> QuickEntryViewController {
-        
-        let storyboard : UIStoryboard = UIStoryboard(name: "QuickEntryStoryboard", bundle: nil)
+                         sodium: SodiumHelper) -> QuickEntryViewController? {
+        let podBundle = Bundle(for: Doordeck.self)
+        if let bundleURL = podBundle.url(forResource: "Doordeck", withExtension: "bundle") {
+            if let bundle = Bundle(url: bundleURL) {
+        let storyboard : UIStoryboard = UIStoryboard(name: "QuickEntryStoryboard", bundle: bundle)
         let vc : QuickEntryViewController = storyboard.instantiateViewController(withIdentifier: "QuickEntryNoNavigation") as! QuickEntryViewController
         vc.lockMan = lockManager
         vc.readerType = readerType
@@ -94,5 +97,7 @@ class DoordeckSDKUI: DoordeckUI {
         vc.sodium = sodium
         
         return vc
+            }}
+        return nil
     }
 }
